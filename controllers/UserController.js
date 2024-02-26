@@ -1,4 +1,9 @@
 const User = require("../models/User");
+const PasswordToken = require("../models/PasswordToken");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
+
+const secret = "zRGqjNM|[]o|*@aQ6>A^n20ch-Xq?g";
 
 class UserController {
 
@@ -83,6 +88,58 @@ class UserController {
     }
 
   }
+
+  async recoverPassword(req, res) {
+    var email = req.body.email;
+
+    var result = await PasswordToken.create(email);
+
+    if(result.status == true) {
+      res.status(200).json({status: 200 ,mensagem: "Token de recuperação gerado com sucesso.", token: result.token});
+
+    } else {
+      res.status(406).json({status: 406, mensagem: "Falha ao gerar o Token."});
+
+    }
+  }
+
+  async chagePassword(req, res) {
+    var token = req.body.token;
+    var password = req.body.password;
+
+    var isTokenValid = await PasswordToken.validate(token);
+
+    if(isTokenValid.status) {
+      await User.changePassword(password, isTokenValid.token.user_id, isTokenValid.token.token);
+      res.status(200).json({status: 406, mensagem: "Senha alterada!"});
+
+    } else {
+      res.status(406).json({status: 406, mensagem: "Token inválido!"});
+
+    }
+  }
+
+  async login(req, res) {
+    var {email, password} = req.body;
+
+    let user = await User.findByEmail(email);
+
+    if(user != undefined) {
+      let resultado = await bcrypt.compare(password, user.password);
+
+      if(resultado == true) {
+        var token = jwt.sign({ email: user.email, role: user.role }, secret);
+        res.status(200).json({status: 200, mensagem: "Usuário validado", token: token});
+
+      } else {
+        res.status(406).json({status: 406, mensagem: "Senha incorreta."});
+      }
+    } else {
+      res.status(406).json({status: 406, mensagem: "usuário não foi encontrado."});
+    }
+  }
+  
+  
 }
 
 module.exports = new UserController();
