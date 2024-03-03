@@ -15,15 +15,15 @@ module.exports = function(req, res, next) {
         next();
 
       } else {
-        res.status(401).json({status: 401, Mensagem: `Falta de privilegios.`});
+        res.status(401).json({status: 401, mensagem: `Falta de privilegios.`});
       }
 
     }catch(e) {
-      res.status(401).json({status: 401, Mensagem: `Erro ao gerar o token error: ${e}`});
+      res.status(401).json({status: 401, mensagem: `Erro ao gerar o token error: ${e}`});
     }
   
   } else {
-    res.status(401).json({status: 401, Mensagem: `Token inválido.`});
+    res.status(401).json({status: 401, mensagem: `Token inválido.`});
     return;
   }
 }

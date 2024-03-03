@@ -108,7 +108,7 @@ class User {
       }
     
     } else {
-      return {status: false, err: "Ousuário não existe!"}
+      return {status: false, err: "O usuário não existe!"}
     }
   }
 

@@ -17,7 +17,7 @@ class UserController {
     var id = req.params.id;
 
     if(isNaN(id)) {
-      res.status(405).json({error: "Tipo de dado inválido."});
+      res.status(405).json({mensagem: "Tipo de dado inválido."});
       return;
     }
 
@@ -38,18 +38,18 @@ class UserController {
 
     var regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if(email == undefined || email == " " || !regexEmail.test(email)) {
-      res.status(400).json({status: 400, error: "Indique um e-mail válido."});
+      res.status(400).json({status: 400, mensagem: "Indique um e-mail válido."});
       return;
     }
 
     if(password == undefined || password == " ") {
-      res.status(400).json({status: 400, error: "Coloque uma senha."});
+      res.status(400).json({status: 400, mensagem: "Coloque uma senha."});
       return;
     }
 
     var emailExiste = await User.findEmail(email);
     if(emailExiste == true) {
-      res.status(406).json({status: 400, error: "E-mail já está cadastrado."});
+      res.status(406).json({status: 400, mensagem: "E-mail já está cadastrado."});
       return;
     }
 
@@ -67,11 +67,11 @@ class UserController {
         res.status(200).json({status: 200, mensagem: "Usuário atualizado com sucesso!"});
         return;
       } else {
-        res.status(404).json({status: 304, error: result.err});
+        res.status(404).json({status: 304, mensagem: result.err});
         return;
       }
     } else {
-      res.status(404).json({status: 304, error: "Falha interna."});
+      res.status(404).json({status: 304, mensagem: "Falha interna."});
       return;
     }
   }
@@ -84,7 +84,7 @@ class UserController {
       res.status(200).json({status: 200, mensagem: "Usuário deletado com sucesso!"});
 
     } else {
-      res.status(406).json({status: 406, error: result.err});
+      res.status(406).json({status: 406, mensagem: result.err});
     }
 
   }
